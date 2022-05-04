@@ -24,15 +24,13 @@ type Request struct {
 	Reason string `json:"reason,omitempty"`
 	Error  *SessionEndedRequestError
 
-	// Message     map[string]string       `json:"message"`
-	// Body        EchoReqBodyInternalBody `json:"body,omitempty"`
+	// Undocumented
+	Body *UndocumentedBody `json:"body,omitempty"`
 }
 
-// Not sure what this is...
-//
-// type EchoReqBodyInternalBody struct {
-// 	ReferenceId string `json:"referenceId,omitempty"`
-// }
+type UndocumentedBody struct {
+	ReferenceId string `json:"referenceId,omitempty"`
+}
 
 //
 //
