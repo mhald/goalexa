@@ -116,7 +116,7 @@ func CreateDirectiveAudioPlayerStop() *Directive {
 	}
 }
 
-func AudioPlayerClearQueue(
+func CreateDirectiveAudioPlayerClearQueue(
 	clearBehavior AudioPlayerClearQueueBehavior,
 ) *Directive {
 	return &Directive{
