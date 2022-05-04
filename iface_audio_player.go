@@ -2,7 +2,7 @@ package goalexa
 
 //
 //
-// AudioPlayer interface
+// Interface: AudioPlayer
 
 const (
 	RequestTypeAudioPlayerPlaybackStarted        RequestType = "AudioPlayer.PlaybackStarted"
@@ -44,41 +44,83 @@ const (
 	AudioPlayerClearQueueBehaviorClearAll      AudioPlayerClearQueueBehavior = "CLEAR_ALL"
 )
 
+type AudioItemMetadata struct {
+	Title           string        `json:"title,omitempty"`
+	Subtitle        string        `json:"subtitle,omitempty"`
+	Art             *DisplayImage `json:"art,omitempty"`
+	BackgroundImage *DisplayImage `json:"backgroundImage,omitempty"`
+}
+
+type AudioItemCaptionDataType string
+
+const (
+	AudioItemCaptionDataTypeUnspecified AudioItemCaptionDataType = ""
+	AudioItemCaptionDataTypeWebvtt      AudioItemCaptionDataType = "WEBVTT"
+)
+
+type AudioItemCaptionData struct {
+	Type    AudioItemCaptionDataType `json:"type,omitempty"`
+	Content string                   `json:"content,omitempty"`
+}
+
+type AudioItemStream struct {
+	Url                   string                `json:"url"`
+	Token                 string                `json:"token"`
+	ExpectedPreviousToken string                `json:"expectedPreviousToken,omitempty"`
+	OffsetInMilliseconds  uint64                `json:"offsetInMilliseconds"`
+	CaptionData           *AudioItemCaptionData `json:"captionData,omitempty"`
+}
+
+type AudioPlayerAudioItem struct {
+	Stream   AudioItemStream    `json:"stream"`
+	Metadata *AudioItemMetadata `json:"metadata,omitempty"`
+}
+
+//
+//
+//
+
+const (
+	DirectiveTypeAudioPlayerPlay       DirectiveType = "AudioPlayer.Play"
+	DirectiveTypeAudioPlayerStop       DirectiveType = "AudioPlayer.Stop"
+	DirectiveTypeAudioPlayerClearQueue DirectiveType = "AudioPlayer.ClearQueue"
+)
+
 func CreateDirectiveAudioPlayerPlay(
 	behavior AudioPlayerPlayBehavior,
 	streamUrl string,
 	token string,
 	prevToken *string,
-	offsetMs int,
-) any {
-	streamObj := map[string]any{
-		"url":                  streamUrl,
-		"token":                token,
-		"offsetInMilliseconds": offsetMs,
+	offsetMs uint64,
+) *Directive {
+	streamObj := AudioItemStream{
+		Url:                  streamUrl,
+		Token:                token,
+		OffsetInMilliseconds: offsetMs,
 	}
 	if prevToken != nil {
-		streamObj["expectedPreviousToken"] = *prevToken
+		streamObj.ExpectedPreviousToken = *prevToken
 	}
-	return map[string]any{
-		"type":         "AudioPlayer.Play",
-		"playBehavior": behavior,
-		"audioItem": map[string]any{
-			"stream": streamObj,
+	return &Directive{
+		Type:         DirectiveTypeAudioPlayerPlay,
+		PlayBehavior: behavior,
+		AudioItem: &AudioPlayerAudioItem{
+			Stream: streamObj,
 		},
 	}
 }
 
-func CreateDirectiveAudioPlayerStop() any {
-	return map[string]any{
-		"type": "AudioPlayer.Stop",
+func CreateDirectiveAudioPlayerStop() *Directive {
+	return &Directive{
+		Type: DirectiveTypeAudioPlayerStop,
 	}
 }
 
 func AudioPlayerClearQueue(
 	clearBehavior AudioPlayerClearQueueBehavior,
-) any {
-	return map[string]any{
-		"type":          "AudioPlayer.ClearQueue",
-		"clearBehavior": clearBehavior,
+) *Directive {
+	return &Directive{
+		Type:          DirectiveTypeAudioPlayerClearQueue,
+		ClearBehavior: clearBehavior,
 	}
 }

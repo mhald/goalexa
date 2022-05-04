@@ -1,5 +1,9 @@
 package goalexa
 
+//
+//
+// Interface: PlaybackController
+
 const (
 	RequestTypePlaybackControllerNextCommandIssued     RequestType = "PlaybackController.NextCommandIssued"
 	RequestTypePlaybackControllerPauseCommandIssued    RequestType = "PlaybackController.PauseCommandIssued"

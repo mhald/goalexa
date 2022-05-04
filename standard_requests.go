@@ -67,13 +67,24 @@ const (
 )
 
 type Intent struct {
-	Name  string          `json:"name"`
-	Slots map[string]Slot `json:"slots"`
+	Name               string             `json:"name"`
+	ConfirmationStatus ConfirmationStatus `json:"confirmationStatus,omitempty"`
+	Slots              map[string]Slot    `json:"slots"`
 }
 
+type ConfirmationStatus string
+
+const (
+	ConfirmationStatusUnspecified ConfirmationStatus = ""
+	ConfirmationStatusNone        ConfirmationStatus = "NONE"
+	ConfirmationStatusConfirmed   ConfirmationStatus = "CONFIRMED"
+	ConfirmationStatusDenied      ConfirmationStatus = "DENIED"
+)
+
 type Slot struct {
-	Name string `json:"name"`
-	SlotValue SlotValue `json:"slotValue"`
+	Name               string             `json:"name"`
+	ConfirmationStatus ConfirmationStatus `json:"confirmationStatus,omitempty"`
+	SlotValue          SlotValue          `json:"slotValue"`
 	// Deprecated, use SlotValue instead
 	Value string `json:"value"`
 	// Deprecated, use SlotValue instead

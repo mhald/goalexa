@@ -6,12 +6,64 @@ type ResponseRoot struct {
 	Response          Response       `json:"response"`
 }
 
+type DirectiveType string
+
+const (
+	DirectiveTypeUnspecified DirectiveType = ""
+)
+
+// Polymorphic
+type Directive struct {
+	// Common
+	Type DirectiveType `json:"type"`
+
+	// VideoApp.Launch
+	VideoItem *VideoItem `json:"videoItem,omitempty"`
+
+	// AudioPlayer.Play
+	PlayBehavior AudioPlayerPlayBehavior `json:"playBehavior,omitempty"`
+	AudioItem    *AudioPlayerAudioItem   `json:"audioItem,omitempty"`
+
+	// AudioPlayer.ClearQueue
+	ClearBehavior AudioPlayerClearQueueBehavior `json:"clearBehavior,omitempty"`
+
+	// Dialog.Delegate
+	// Dialog.ElicitSlot
+	// Dialog.ConfirmSlot
+	// Dialog.ConfirmIntent
+	UpdatedIntent *Intent `json:"updatedIntent,omitempty"`
+
+	// Dialog.ElicitSlot
+	SlotToElicit string `json:"slotToElicit,omitempty"`
+
+	// Dialog.ConfirmSlot
+	SlotToConfirm string `json:"slotToConfirm,omitempty"`
+
+	// Dialog.UpdateDynamicEntities
+	// TODO
+
+	// Alexa.Presentation.APL.RenderDocument
+	// TODO
+
+	// Alexa.Presentation.APL.ExecuteCommands
+	// TODO
+
+	// Alexa.Presentation.APL.SendIndexListData
+	// TODO
+
+	// Alexa.Presentation.APL.SendTokenListData
+	// TODO
+
+	// Alexa.Presentation.APL.UpdateIndexListData
+	// TODO
+}
+
 type Response struct {
 	OutputSpeech     *OutputSpeech     `json:"outputSpeech,omitempty"`
 	Card             *Card             `json:"card,omitempty"`
 	Reprompt         *Reprompt         `json:"reprompt,omitempty"`
 	ShouldEndSession *bool             `json:"shouldEndSession,omitempty"`
-	Directives       []any             `json:"directives,omitempty"`
+	Directives       []Directive       `json:"directives,omitempty"`
 	CanFulfillIntent *CanFulfillIntent `json:"canFulfillIntent,omitempty"`
 }
 
@@ -28,10 +80,10 @@ const (
 )
 
 type OutputSpeech struct {
-	Type         OutputSpeechType `json:"type,omitempty"`
-	Text         string           `json:"text,omitempty"`
-	SSML         string           `json:"ssml,omitempty"`
-	PlayBehavior AudioPlayerPlayBehavior     `json:"playBehavior,omitempty"`
+	Type         OutputSpeechType        `json:"type,omitempty"`
+	Text         string                  `json:"text,omitempty"`
+	SSML         string                  `json:"ssml,omitempty"`
+	PlayBehavior AudioPlayerPlayBehavior `json:"playBehavior,omitempty"`
 }
 
 type CardImage struct {
@@ -61,7 +113,7 @@ func NewResponseRoot() *ResponseRoot {
 	return &ResponseRoot{
 		Version: "1.0",
 		Response: Response{
-			Directives: []any{},
+			Directives: []Directive{},
 		},
 		SessionAttributes: map[string]any{},
 	}
