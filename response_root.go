@@ -63,7 +63,7 @@ type Response struct {
 	Card             *Card             `json:"card,omitempty"`
 	Reprompt         *Reprompt         `json:"reprompt,omitempty"`
 	ShouldEndSession *bool             `json:"shouldEndSession,omitempty"`
-	Directives       []Directive       `json:"directives,omitempty"`
+	Directives       []*Directive       `json:"directives,omitempty"`
 	CanFulfillIntent *CanFulfillIntent `json:"canFulfillIntent,omitempty"`
 }
 
@@ -113,7 +113,7 @@ func NewResponseRoot() *ResponseRoot {
 	return &ResponseRoot{
 		Version: "1.0",
 		Response: Response{
-			Directives: []Directive{},
+			Directives: []*Directive{},
 		},
 		SessionAttributes: map[string]any{},
 	}
