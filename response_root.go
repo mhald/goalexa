@@ -63,7 +63,7 @@ type Response struct {
 	Card             *Card             `json:"card,omitempty"`
 	Reprompt         *Reprompt         `json:"reprompt,omitempty"`
 	ShouldEndSession *bool             `json:"shouldEndSession,omitempty"`
-	Directives       []*Directive       `json:"directives,omitempty"`
+	Directives       []*Directive      `json:"directives,omitempty"`
 	CanFulfillIntent *CanFulfillIntent `json:"canFulfillIntent,omitempty"`
 }
 
@@ -117,6 +117,13 @@ func NewResponseRoot() *ResponseRoot {
 		},
 		SessionAttributes: map[string]any{},
 	}
+}
+
+func (rr *ResponseRoot) AddDirective(directive *Directive) {
+	if rr.Response.Directives == nil {
+		rr.Response.Directives = []*Directive{}
+	}
+	rr.Response.Directives = append(rr.Response.Directives, directive)
 }
 
 //
