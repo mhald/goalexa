@@ -1,4 +1,4 @@
-package goalexa
+package alexaapi
 
 type ResponseRoot struct {
 	Version           string         `json:"version"`

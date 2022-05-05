@@ -1,4 +1,4 @@
-package goalexa
+package alexaapi
 
 // The set of so-called "standard requests"
 const (
