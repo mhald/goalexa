@@ -7,34 +7,42 @@ import (
 	"io"
 	"io/ioutil"
 	"net/http"
+	"os"
 
 	"github.com/aivahealth/goalexa/alexaapi"
 	"go.uber.org/zap"
 )
 
+type RequestHandler interface {
+	CanHandle(*Skill, *alexaapi.RequestRoot) bool
+	Handle(*Skill, *alexaapi.RequestRoot) (*alexaapi.ResponseRoot, error)
+}
+
 type Skill struct {
+	Config any
+
 	applicationId string
-	handlers      []Handler
+	handlers      []RequestHandler
 }
 
 func NewSkill(applicationId string) *Skill {
 	return &Skill{
 		applicationId: applicationId,
-		handlers:      []Handler{},
+		handlers:      []RequestHandler{},
 	}
 }
 
-func (s *Skill) RegisterHandlers(handler ...Handler) {
+func (s *Skill) RegisterHandlers(handler ...RequestHandler) {
 	if s.handlers == nil {
-		s.handlers = []Handler{}
+		s.handlers = []RequestHandler{}
 	}
 	s.handlers = append(s.handlers, handler...)
 }
 
 func (s *Skill) HandleRequest(r *alexaapi.RequestRoot) (*alexaapi.ResponseRoot, error) {
 	for _, h := range s.handlers {
-		if h.CanHandle(r) {
-			return h.Handle(r)
+		if h.CanHandle(s, r) {
+			return h.Handle(s, r)
 		}
 	}
 	return nil, fmt.Errorf("No handler found for request (%q)", r.Request.Type)
@@ -51,6 +59,13 @@ func (s *Skill) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		Logger.Error("ServeHTTP failed", zap.Error(err))
 		w.WriteHeader(http.StatusInternalServerError)
 		return
+	}
+
+	if os.Getenv("GOALEXA_DUMP") != "" {
+		trash := map[string]any{}
+		json.Unmarshal(requestJson, &trash)
+		requestJsonPretty, _ := json.MarshalIndent(&trash, "", "    ")
+		Logger.Debug(fmt.Sprintf("-> -> -> From Alexa: %s", string(requestJsonPretty)))
 	}
 
 	var root alexaapi.RequestRoot
@@ -86,5 +101,10 @@ func (s *Skill) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		Logger.Error("ServeHTTP failed", zap.Error(err))
 		w.WriteHeader(http.StatusInternalServerError)
 		return
+	}
+
+	if os.Getenv("GOALEXA_DUMP") != "" {
+		responseJsonPretty, _ := json.MarshalIndent(&response, "", "    ")
+		Logger.Debug(fmt.Sprintf("<- <- <- To Alexa: %s", string(responseJsonPretty)))
 	}
 }

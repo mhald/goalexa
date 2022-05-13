@@ -1,9 +1,9 @@
 package alexaapi
 
 type ResponseRoot struct {
-	Version           string         `json:"version"`
+	Version           string         `json:"version,omitempty"`
 	SessionAttributes map[string]any `json:"sessionAttributes,omitempty"`
-	Response          Response       `json:"response"`
+	Response          Response       `json:"response,omitempty"`
 }
 
 type DirectiveType string
