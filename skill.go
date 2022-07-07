@@ -64,7 +64,12 @@ func (s *Skill) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	if os.Getenv("GOALEXA_DUMP") != "" {
 		trash := map[string]any{}
 		json.Unmarshal(requestJson, &trash)
-		requestJsonPretty, _ := json.MarshalIndent(&trash, "", "    ")
+		var requestJsonPretty []byte
+		if os.Getenv("GOALEXA_DUMP") == "full" {
+			requestJsonPretty, _ = json.MarshalIndent(trash, "", "    ")
+		} else {
+			requestJsonPretty, _ = json.MarshalIndent(trash["request"], "", "    ")
+		}
 		Logger.Debug(fmt.Sprintf("-> -> -> From Alexa: %s", string(requestJsonPretty)))
 	}
 
@@ -85,6 +90,7 @@ func (s *Skill) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
 	response, err := s.HandleRequest(&root)
 	if err != nil {
+		Logger.Error("ServeHTTP failed", zap.Error(err))
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
