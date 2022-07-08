@@ -1,9 +1,9 @@
 package alexaapi
 
 type ResponseRoot struct {
-	Version           string         `json:"version,omitempty"`
-	SessionAttributes map[string]any `json:"sessionAttributes,omitempty"`
-	Response          Response       `json:"response,omitempty"`
+	Version           string   `json:"version,omitempty"`
+	SessionAttributes any      `json:"sessionAttributes,omitempty"`
+	Response          Response `json:"response,omitempty"`
 }
 
 type DirectiveType string
@@ -56,6 +56,11 @@ type Directive struct {
 
 	// Alexa.Presentation.APL.UpdateIndexListData
 	// TODO
+
+	// Connections.StartConnection
+	Uri   string                           `json:"uri,omitempty"`
+	Input *ConnectionsStartConnectionInput `json:"input,omitempty"`
+	Token string                           `json:"token,omitempty"`
 }
 
 type Response struct {

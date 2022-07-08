@@ -41,8 +41,13 @@ type Unit struct {
 }
 
 type Person struct {
-	PersonId    string `json:"personId,omitempty"`
-	AccessToken string `json:"accessToken,omitempty"`
+	PersonId                      string                        `json:"personId,omitempty"`
+	AccessToken                   string                        `json:"accessToken,omitempty"`
+	AuthenticationConfidenceLevel AuthenticationConfidenceLevel `json:"authenticationConfidenceLevel,omitempty"`
+}
+
+type AuthenticationConfidenceLevel struct {
+	Level int `json:"level,omitempty"`
 }
 
 type System struct {
@@ -66,9 +71,3 @@ type Viewport struct {
 	Mode  string   `json:"mode,omitempty"`
 	Touch []string `json:"touch,omitempty"`
 }
-
-type RequestType string
-
-const (
-	RequestTypeUnspecified RequestType = ""
-)

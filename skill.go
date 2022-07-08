@@ -83,7 +83,12 @@ func (s *Skill) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
 	if root.Context.System.Application.ApplicationId == "" || root.Context.System.Application.ApplicationId != s.applicationId {
 		err := fmt.Errorf("Unable to verify applicationId")
-		Logger.Error("ServeHTTP failed", zap.Error(err))
+		Logger.Error(
+			"ServeHTTP failed",
+			zap.Error(err),
+			zap.String("req_skill_id", root.Context.System.Application.ApplicationId),
+			zap.String("cfg_skill_id", s.applicationId),
+		)
 		w.WriteHeader(http.StatusBadRequest)
 		return
 	}
