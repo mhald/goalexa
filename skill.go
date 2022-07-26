@@ -2,6 +2,7 @@ package goalexa
 
 import (
 	"bytes"
+	"context"
 	"encoding/json"
 	"fmt"
 	"io"
@@ -14,41 +15,45 @@ import (
 )
 
 type RequestHandler interface {
-	CanHandle(*Skill, *alexaapi.RequestRoot) bool
-	Handle(*Skill, *alexaapi.RequestRoot) (*alexaapi.ResponseRoot, error)
+	CanHandle(context.Context, *Skill, *alexaapi.RequestRoot) bool
+	Handle(context.Context, *Skill, *alexaapi.RequestRoot) (*alexaapi.ResponseRoot, error)
+}
+
+type HandlerGroup []RequestHandler
+
+func (hg HandlerGroup) Handle(ctx context.Context, s *Skill, reqRoot *alexaapi.RequestRoot) (*alexaapi.ResponseRoot, error) {
+	for _, h := range hg {
+		if h.CanHandle(ctx, s, reqRoot) {
+			return h.Handle(ctx, s, reqRoot)
+		}
+	}
+	return nil, fmt.Errorf("No handler found for request (%q)", reqRoot.Request.GetType())
 }
 
 type Skill struct {
 	Config any
 
 	applicationId string
-	handlers      []RequestHandler
+	handlers      HandlerGroup
 }
 
 func NewSkill(applicationId string) *Skill {
 	return &Skill{
 		applicationId: applicationId,
-		handlers:      []RequestHandler{},
+		handlers:      HandlerGroup{},
 	}
 }
 
 func (s *Skill) RegisterHandlers(handler ...RequestHandler) {
 	if s.handlers == nil {
-		s.handlers = []RequestHandler{}
+		s.handlers = HandlerGroup{}
 	}
 	s.handlers = append(s.handlers, handler...)
 }
 
-func (s *Skill) HandleRequest(r *alexaapi.RequestRoot) (*alexaapi.ResponseRoot, error) {
-	for _, h := range s.handlers {
-		if h.CanHandle(s, r) {
-			return h.Handle(s, r)
-		}
-	}
-	return nil, fmt.Errorf("No handler found for request (%q)", r.Request.Type)
-}
-
 func (s *Skill) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+	ctx := r.Context()
+
 	if err := validateAlexaRequest(w, r); err != nil {
 		w.WriteHeader(http.StatusBadRequest)
 		return
@@ -93,7 +98,15 @@ func (s *Skill) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	response, err := s.HandleRequest(&root)
+	err = alexaapi.SetRequestViaLookahead(ctx, &root, requestJson)
+	if err != nil {
+		Logger.Error("ServeHTTP failed", zap.Error(err))
+		w.WriteHeader(http.StatusInternalServerError)
+		return
+	}
+
+	// TODO: fallback handler for when no handler takes the request
+	response, err := s.handlers.Handle(ctx, s, &root)
 	if err != nil {
 		Logger.Error("ServeHTTP failed", zap.Error(err))
 		w.WriteHeader(http.StatusInternalServerError)

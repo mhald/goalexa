@@ -2,7 +2,7 @@ package alexaapi
 
 //
 //
-// Interface: APL
+// Interface: Alexa.Presentation.APL
 
 const (
 	RequestTypeAplLoadIndexListData RequestType = "Alexa.Presentation.APL.LoadIndexListData"
@@ -19,34 +19,41 @@ const (
 	DirectiveTypeUpdateIndexListData DirectiveType = "Alexa.Presentation.APL.UpdateIndexListData"
 )
 
-// TODO: Fill in the following helpers
+//
+//
+// Directive: Alexa.Presentation.APL.RenderDocument
 
-func CreateDirectiveAplRenderDocument() *Directive {
-	return &Directive{
-		Type: DirectiveTypeAplRenderDocument,
-	}
+type DirectiveAplRenderDocument struct {
+	Type        DirectiveType  `json:"type"`
+	Token       string         `json:"token"`
+	Document    AplDocument    `json:"document"`
+	Datasources map[string]any `json:"datasources,omitempty"`
 }
 
-func CreateDirectiveAplExecuteCommands() *Directive {
-	return &Directive{
-		Type: DirectiveTypeAplExecuteCommands,
-	}
+type AplDocument struct {
+	Type AplDocumentType `json:"type"`
+
+	// When type = Link
+	// e.g. doc://alexa/apl/documents/my-document
+	Src string `json:"src,omitempty"`
 }
 
-func CreateDirectiveSendIndexListData() *Directive {
-	return &Directive{
-		Type: DirectiveTypeSendIndexListData,
-	}
-}
+type AplDocumentType string
 
-func CreateDirectiveSendTokenListData() *Directive {
-	return &Directive{
-		Type: DirectiveTypeSendTokenListData,
-	}
-}
+const (
+	AplDocumentTypeUnspecified AplDocumentType = ""
+	AplDocumentTypeLink        AplDocumentType = "Link"
+	AplDocumentTypeApl         AplDocumentType = "APL"
+)
 
-func CreateDirectiveUpdateIndexListData() *Directive {
-	return &Directive{
-		Type: DirectiveTypeUpdateIndexListData,
-	}
+//
+//
+// Request: Alexa.Presentation.APL.UserEvent
+
+type RequestAplUserEvent struct {
+	RequestCommon
+	Token      string         `json:"token,omitempty"`
+	Arguments  []any          `json:"arguments,omitempty"`
+	Source     map[string]any `json:"source,omitempty"`
+	Components map[string]any `json:"components,omitempty"`
 }

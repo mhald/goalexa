@@ -22,8 +22,8 @@ func CreateDirectiveVideoAppLaunch(
 	streamUrl string,
 	title string,
 	subtitle string,
-) *Directive {
-	return &Directive{
+) *DirectiveVideoAppLaunch {
+	return &DirectiveVideoAppLaunch{
 		Type: DirectiveTypeVideoAppLaunch,
 		VideoItem: &VideoItem{
 			Source: streamUrl,
@@ -33,4 +33,13 @@ func CreateDirectiveVideoAppLaunch(
 			},
 		},
 	}
+}
+
+//
+//
+// Directive: VideoApp.Launch
+
+type DirectiveVideoAppLaunch struct {
+	Type      DirectiveType `json:"type"`
+	VideoItem *VideoItem    `json:"videoItem"`
 }

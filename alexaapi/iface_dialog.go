@@ -12,39 +12,85 @@ const (
 	DirectiveTypeDialogUpdateDynamicEntities DirectiveType = "Dialog.UpdateDynamicEntities"
 )
 
-func CreateDirectiveDialogDelegate(updatedIntent *Intent) *Directive {
-	return &Directive{
+//
+//
+// Directive: Dialog.Delegate
+
+type DirectiveDialogDelegate struct {
+	Type          DirectiveType `json:"type"`
+	UpdatedIntent *Intent       `json:"updatedIntent,omitempty"`
+}
+
+func CreateDirectiveDialogDelegate(updatedIntent *Intent) *DirectiveDialogDelegate {
+	return &DirectiveDialogDelegate{
 		Type:          DirectiveTypeDialogDelegate,
 		UpdatedIntent: updatedIntent,
 	}
 }
 
-func CreateDirectiveDialogElicitSlot(updatedIntent *Intent, slotToElicit string) *Directive {
-	return &Directive{
+//
+//
+// Directive: Dialog.ElicitSlot
+
+type DirectiveDialogElicitSlot struct {
+	Type          DirectiveType `json:"type"`
+	UpdatedIntent *Intent       `json:"updatedIntent,omitempty"`
+	SlotToElicit  string        `json:"slotToElicit,omitempty"`
+}
+
+func CreateDirectiveDialogElicitSlot(updatedIntent *Intent, slotToElicit string) *DirectiveDialogElicitSlot {
+	return &DirectiveDialogElicitSlot{
 		Type:          DirectiveTypeDialogElicitSlot,
 		UpdatedIntent: updatedIntent,
 		SlotToElicit:  slotToElicit,
 	}
 }
 
-func CreateDirectiveDialogConfirmSlot(updatedIntent *Intent, slotToConfirm string) *Directive {
-	return &Directive{
+//
+//
+// Directive: Dialog.ConfirmSlot
+
+type DirectiveDialogConfirmSlot struct {
+	Type          DirectiveType `json:"type"`
+	SlotToConfirm string        `json:"slotToConfirm,omitempty"`
+	UpdatedIntent *Intent       `json:"updatedIntent,omitempty"`
+}
+
+func CreateDirectiveDialogConfirmSlot(updatedIntent *Intent, slotToConfirm string) *DirectiveDialogConfirmSlot {
+	return &DirectiveDialogConfirmSlot{
 		Type:          DirectiveTypeDialogConfirmSlot,
 		UpdatedIntent: updatedIntent,
 		SlotToConfirm: slotToConfirm,
 	}
 }
 
-func CreateDirectiveDialogConfirmIntent(updatedIntent *Intent) *Directive {
-	return &Directive{
+//
+//
+// Directive: Dialog.ConfirmIntent
+
+type DirectiveDialogConfirmIntent struct {
+	Type          DirectiveType `json:"type"`
+	UpdatedIntent *Intent       `json:"updatedIntent,omitempty"`
+}
+
+func CreateDirectiveDialogConfirmIntent(updatedIntent *Intent) *DirectiveDialogConfirmIntent {
+	return &DirectiveDialogConfirmIntent{
 		Type:          DirectiveTypeDialogConfirmIntent,
 		UpdatedIntent: updatedIntent,
 	}
 }
 
-// TODO
-func CreateDirectiveDialogUpdateDynamicEntities() *Directive {
-	return &Directive{
+//
+//
+// Directive: Dialog.UpdateDynamicEntities
+
+type DirectiveDialogUpdateDynamicEntities struct {
+	Type DirectiveType `json:"type"`
+	// TODO
+}
+
+func CreateDirectiveDialogUpdateDynamicEntities() *DirectiveDialogUpdateDynamicEntities {
+	return &DirectiveDialogUpdateDynamicEntities{
 		Type: DirectiveTypeDialogUpdateDynamicEntities,
 	}
 }

@@ -3,7 +3,7 @@ package alexaapi
 type RequestRoot struct {
 	Version string  `json:"version"`
 	Session Session `json:"session"`
-	Request Request `json:"request"`
+	Request Request `json:"-"`
 	Context Context `json:"context"`
 }
 
@@ -30,9 +30,17 @@ type User struct {
 }
 
 type Device struct {
-	DeviceId             string `json:"deviceId,omitempty"`
-	SupportedInterfaces  any    `json:"supportedInterfaces,omitempty"`
-	PersistentEndpointId string `json:"persistentEndpointId,omitempty"`
+	DeviceId             string                        `json:"deviceId,omitempty"`
+	SupportedInterfaces  map[string]SupportedInterface `json:"supportedInterfaces,omitempty"`
+	PersistentEndpointId string                        `json:"persistentEndpointId,omitempty"`
+}
+
+type SupportedInterface struct {
+	Runtime *SupportedInterfaceRuntime `json:"runtime,omitempty"`
+}
+
+type SupportedInterfaceRuntime struct {
+	MaxVersion string `json:"maxVersion,omitempty"`
 }
 
 type Unit struct {
@@ -63,11 +71,6 @@ type System struct {
 type Context struct {
 	System      System              `json:"System,omitempty"`
 	Viewport    *Viewport           `json:"Viewport,omitempty"`
+	Viewports   []*Viewport         `json:"Viewports,omitempty"`
 	AudioPlayer *AudioPlayerContext `json:"AudioPlayer,omitempty"`
-}
-
-type Viewport struct {
-	Dpi   int      `json:"dpi,omitempty"`
-	Mode  string   `json:"mode,omitempty"`
-	Touch []string `json:"touch,omitempty"`
 }

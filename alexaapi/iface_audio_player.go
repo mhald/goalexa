@@ -86,13 +86,23 @@ const (
 	DirectiveTypeAudioPlayerClearQueue DirectiveType = "AudioPlayer.ClearQueue"
 )
 
+//
+//
+// Directive: AudioPlayer.Play
+
+type DirectiveAudioPlayerPlay struct {
+	Type         DirectiveType           `json:"type"`
+	PlayBehavior AudioPlayerPlayBehavior `json:"playBehavior,omitempty"`
+	AudioItem    *AudioPlayerAudioItem   `json:"audioItem,omitempty"`
+}
+
 func CreateDirectiveAudioPlayerPlay(
 	behavior AudioPlayerPlayBehavior,
 	streamUrl string,
 	token string,
 	prevToken *string,
 	offsetMs uint64,
-) *Directive {
+) *DirectiveAudioPlayerPlay {
 	streamObj := AudioItemStream{
 		Url:                  streamUrl,
 		Token:                token,
@@ -101,7 +111,7 @@ func CreateDirectiveAudioPlayerPlay(
 	if prevToken != nil {
 		streamObj.ExpectedPreviousToken = *prevToken
 	}
-	return &Directive{
+	return &DirectiveAudioPlayerPlay{
 		Type:         DirectiveTypeAudioPlayerPlay,
 		PlayBehavior: behavior,
 		AudioItem: &AudioPlayerAudioItem{
@@ -110,16 +120,33 @@ func CreateDirectiveAudioPlayerPlay(
 	}
 }
 
-func CreateDirectiveAudioPlayerStop() *Directive {
-	return &Directive{
+//
+//
+// Directive: AudioPlayer.Stop
+
+type DirectiveAudioPlayerStop struct {
+	Type DirectiveType `json:"type"`
+}
+
+func CreateDirectiveAudioPlayerStop() *DirectiveAudioPlayerStop {
+	return &DirectiveAudioPlayerStop{
 		Type: DirectiveTypeAudioPlayerStop,
 	}
 }
 
+//
+//
+// Directive: AudioPlayer.ClearQueue
+
+type DirectiveAudioPlayerClearQueue struct {
+	Type          DirectiveType                 `json:"type"`
+	ClearBehavior AudioPlayerClearQueueBehavior `json:"clearBehavior,omitempty"`
+}
+
 func CreateDirectiveAudioPlayerClearQueue(
 	clearBehavior AudioPlayerClearQueueBehavior,
-) *Directive {
-	return &Directive{
+) *DirectiveAudioPlayerClearQueue {
+	return &DirectiveAudioPlayerClearQueue{
 		Type:          DirectiveTypeAudioPlayerClearQueue,
 		ClearBehavior: clearBehavior,
 	}

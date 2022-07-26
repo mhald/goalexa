@@ -35,9 +35,20 @@ const (
 	CustomPolicyNameVerifyVoicePin CustomPolicyName = "VOICE_PIN"
 )
 
+//
+//
+// Directive: Connections.StartConnection
+
+type DirectiveConnectionsStartConnection struct {
+	Type  DirectiveType                    `json:"type"`
+	Uri   string                           `json:"uri,omitempty"`
+	Input *ConnectionsStartConnectionInput `json:"input,omitempty"`
+	Token string                           `json:"token,omitempty"`
+}
+
 // This directive is used to verify the user's identity (via PIN)
-func CreateDirectiveConnectionsStartConnectionVoicePin(token string) *Directive {
-	return &Directive{
+func CreateDirectiveConnectionsStartConnectionVoicePin(token string) *DirectiveConnectionsStartConnection {
+	return &DirectiveConnectionsStartConnection{
 		Type:  DirectiveTypeConnectionsStartConnection,
 		Uri:   ConnectionsStartConnectionUriVerifyPerson2,
 		Token: token,
