@@ -19,6 +19,29 @@ const (
 	DirectiveTypeUpdateIndexListData DirectiveType = "Alexa.Presentation.APL.UpdateIndexListData"
 )
 
+const (
+	AplCommandAnimateItem       string = "AnimateItem"
+	AplCommandAutoPage          string = "AutoPage"
+	AplCommandClearFocus        string = "ClearFocus"
+	AplCommandFinish            string = "Finish"
+	AplCommandIdle              string = "Idle"
+	AplCommandOpenUrl           string = "OpenURL"
+	AplCommandParallel          string = "Parallel"
+	AplCommandReinflate         string = "Reinflate"
+	AplCommandScroll            string = "Scroll"
+	AplCommandScrollToComponent string = "ScrollToComponent"
+	AplCommandScrollToIndex     string = "ScrollToIndex"
+	AplCommandSelect            string = "Select"
+	AplCommandSendEvent         string = "SendEvent"
+	AplCommandSequential        string = "Sequential"
+	AplCommandSetFocus          string = "SetFocus"
+	AplCommandSetPage           string = "SetPage"
+	AplCommandSetState          string = "SetState"
+	AplCommandSetValue          string = "SetValue"
+	AplCommandSpeakItem         string = "SpeakItem"
+	AplCommandSpeakList         string = "SpeakList"
+)
+
 //
 //
 // Directive: Alexa.Presentation.APL.RenderDocument
