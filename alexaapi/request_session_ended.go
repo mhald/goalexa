@@ -6,9 +6,18 @@ package alexaapi
 
 type RequestSessionEndedRequest struct {
 	RequestCommon
-	Reason string                    `json:"reason,omitempty"`
+	Reason SessionEndedReason        `json:"reason,omitempty"`
 	Error  *SessionEndedRequestError `json:"error,omitempty"`
 }
+
+type SessionEndedReason string
+
+const (
+	SessionEndedReasonUnspecified          SessionEndedReason = "UNSPECIFIED"
+	SessionEndedReasonUserInitiated        SessionEndedReason = "USER_INITIATED"
+	SessionEndedReasonError                SessionEndedReason = "ERROR"
+	SessionEndedReasonExceededMaxReprompts SessionEndedReason = "EXCEEDED_MAX_REPROMPTS"
+)
 
 type SessionEndedRequestErrorType string
 

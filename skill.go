@@ -113,6 +113,14 @@ func (s *Skill) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	if response == nil {
+		if os.Getenv("GOALEXA_DUMP") != "" {
+			Logger.Debug("<- <- <- To Alexa (http 200, empty body)")
+		}
+		w.WriteHeader(http.StatusOK)
+		return
+	}
+
 	responseJson, err := json.Marshal(response)
 	if err != nil {
 		Logger.Error("ServeHTTP failed", zap.Error(err))
