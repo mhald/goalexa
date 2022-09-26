@@ -49,25 +49,28 @@ const (
 type DirectiveAplRenderDocument struct {
 	Type        DirectiveType  `json:"type"`
 	Token       string         `json:"token"`
-	Document    AplDocument    `json:"document"`
+	Document    map[string]any `json:"document"`
 	Datasources map[string]any `json:"datasources,omitempty"`
 }
 
-type AplDocument struct {
-	Type AplDocumentType `json:"type"`
-
-	// When type = Link
-	// e.g. doc://alexa/apl/documents/my-document
-	Src string `json:"src,omitempty"`
+func NewDirectiveAplRenderDocumentLink(token string, url string) *DirectiveAplRenderDocument {
+	return &DirectiveAplRenderDocument{
+		Type:  DirectiveTypeAplRenderDocument,
+		Token: token,
+		Document: map[string]any{
+			"type": "Link",
+			"src":  url,
+		},
+	}
 }
 
-type AplDocumentType string
-
-const (
-	AplDocumentTypeUnspecified AplDocumentType = ""
-	AplDocumentTypeLink        AplDocumentType = "Link"
-	AplDocumentTypeApl         AplDocumentType = "APL"
-)
+func NewDirectiveAplRenderDocument(token string, document map[string]any) *DirectiveAplRenderDocument {
+	return &DirectiveAplRenderDocument{
+		Type:     DirectiveTypeAplRenderDocument,
+		Token:    token,
+		Document: document,
+	}
+}
 
 //
 //
