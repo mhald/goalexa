@@ -53,7 +53,7 @@ type DirectiveAplRenderDocument struct {
 	Datasources map[string]any `json:"datasources,omitempty"`
 }
 
-func NewDirectiveAplRenderDocumentLink(
+func CreateDirectiveAplRenderDocumentLink(
 	token string,
 	url string,
 	datasources map[string]any,
@@ -69,7 +69,7 @@ func NewDirectiveAplRenderDocumentLink(
 	}
 }
 
-func NewDirectiveAplRenderDocument(
+func CreateDirectiveAplRenderDocument(
 	token string,
 	document map[string]any,
 	datasources map[string]any,
