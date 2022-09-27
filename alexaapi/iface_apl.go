@@ -53,7 +53,11 @@ type DirectiveAplRenderDocument struct {
 	Datasources map[string]any `json:"datasources,omitempty"`
 }
 
-func NewDirectiveAplRenderDocumentLink(token string, url string) *DirectiveAplRenderDocument {
+func NewDirectiveAplRenderDocumentLink(
+	token string,
+	url string,
+	datasources map[string]any,
+) *DirectiveAplRenderDocument {
 	return &DirectiveAplRenderDocument{
 		Type:  DirectiveTypeAplRenderDocument,
 		Token: token,
@@ -61,14 +65,20 @@ func NewDirectiveAplRenderDocumentLink(token string, url string) *DirectiveAplRe
 			"type": "Link",
 			"src":  url,
 		},
+		Datasources: datasources,
 	}
 }
 
-func NewDirectiveAplRenderDocument(token string, document map[string]any) *DirectiveAplRenderDocument {
+func NewDirectiveAplRenderDocument(
+	token string,
+	document map[string]any,
+	datasources map[string]any,
+) *DirectiveAplRenderDocument {
 	return &DirectiveAplRenderDocument{
-		Type:     DirectiveTypeAplRenderDocument,
-		Token:    token,
-		Document: document,
+		Type:        DirectiveTypeAplRenderDocument,
+		Token:       token,
+		Document:    document,
+		Datasources: datasources,
 	}
 }
 
