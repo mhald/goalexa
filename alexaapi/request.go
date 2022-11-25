@@ -81,6 +81,19 @@ func SetRequestViaLookahead(ctx context.Context, reqRoot *RequestRoot, rootJson 
 
 	requestType := RequestType(gjson.GetBytes(reqJson, "type").String())
 	switch requestType {
+	case RequestTypeCanFulfillIntentRequest:
+		var r CanFulfillIntentRequest
+		err := json.Unmarshal(reqJson, &r)
+		if err != nil {
+			return err
+		}
+		err = unmarshalIntoOther(&r.otherFields)
+		if err != nil {
+			return err
+		}
+		reqRoot.Request = &r
+		return nil
+
 	case RequestTypeIntentRequest:
 		var r RequestIntentRequest
 		err := json.Unmarshal(reqJson, &r)
