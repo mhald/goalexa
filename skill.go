@@ -37,6 +37,8 @@ type Skill struct {
 	handlers      HandlerGroup
 }
 
+// applicationId may be blank
+// if blank, no applicationId validation will be performed
 func NewSkill(applicationId string) *Skill {
 	return &Skill{
 		applicationId: applicationId,
@@ -86,7 +88,7 @@ func (s *Skill) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if root.Context.System.Application.ApplicationId == "" || root.Context.System.Application.ApplicationId != s.applicationId {
+	if s.applicationId != "" && (root.Context.System.Application.ApplicationId == "" || root.Context.System.Application.ApplicationId != s.applicationId) {
 		err := fmt.Errorf("Unable to verify applicationId")
 		Logger.Error(
 			"ServeHTTP failed",
@@ -103,6 +105,15 @@ func (s *Skill) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		Logger.Error("ServeHTTP failed", zap.Error(err))
 		w.WriteHeader(http.StatusInternalServerError)
 		return
+	}
+
+	if root.Directive.Header.Namespace != "" {
+		err = alexaapi.SetEnvelopePayloadViaLookahead(ctx, &root.Directive, requestJson)
+		if err != nil {
+			Logger.Error("ServeHTTP failed", zap.Error(err))
+			w.WriteHeader(http.StatusInternalServerError)
+			return
+		}
 	}
 
 	// TODO: fallback handler for when no handler takes the request

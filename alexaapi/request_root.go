@@ -1,10 +1,11 @@
 package alexaapi
 
 type RequestRoot struct {
-	Version string  `json:"version"`
-	Session Session `json:"session"`
-	Request Request `json:"-"`
-	Context Context `json:"context"`
+	Version   string   `json:"version"`
+	Session   Session  `json:"session"`
+	Request   Request  `json:"-"`
+	Context   Context  `json:"context"`
+	Directive Envelope `json:"directive"`
 }
 
 type Session struct {

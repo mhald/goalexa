@@ -132,6 +132,19 @@ func SetRequestViaLookahead(ctx context.Context, reqRoot *RequestRoot, rootJson 
 		}
 		reqRoot.Request = &r
 		return nil
+
+	case RequestTypeAlexaAuthorizationGrant:
+		var r RequestAlexaAuthorizationGrant
+		err := json.Unmarshal(reqJson, &r)
+		if err != nil {
+			return err
+		}
+		err = unmarshalIntoOther(&r.otherFields)
+		if err != nil {
+			return err
+		}
+		reqRoot.Request = &r
+		return nil
 	}
 
 	var r RequestCommon

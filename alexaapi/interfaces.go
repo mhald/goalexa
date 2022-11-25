@@ -13,4 +13,5 @@ const (
 	InterfaceDialog                Interface = "Dialog"
 	InterfacePlaybackController    Interface = "PlaybackController"
 	InterfaceVideoApp              Interface = "VideoApp"
+	InterfaceAlexaAuthorization    Interface = "Alexa.Authorization"
 )
