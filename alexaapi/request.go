@@ -158,6 +158,45 @@ func SetRequestViaLookahead(ctx context.Context, reqRoot *RequestRoot, rootJson 
 		}
 		reqRoot.Request = &r
 		return nil
+
+	case RequestTypeAlexaSkillEventSkillAccountLinked:
+		var r RequestAlexaSkillEventSkillAccountLinked
+		err := json.Unmarshal(reqJson, &r)
+		if err != nil {
+			return err
+		}
+		err = unmarshalIntoOther(&r.otherFields)
+		if err != nil {
+			return err
+		}
+		reqRoot.Request = &r
+		return nil
+
+	case RequestTypeAlexaSkillEventSkillPermissionAccepted:
+		var r RequestAlexaSkillEventSkillPermissionAccepted
+		err := json.Unmarshal(reqJson, &r)
+		if err != nil {
+			return err
+		}
+		err = unmarshalIntoOther(&r.otherFields)
+		if err != nil {
+			return err
+		}
+		reqRoot.Request = &r
+		return nil
+
+	case RequestTypeAlexaSkillEventSkillPermissionChanged:
+		var r RequestAlexaSkillEventSkillPermissionChanged
+		err := json.Unmarshal(reqJson, &r)
+		if err != nil {
+			return err
+		}
+		err = unmarshalIntoOther(&r.otherFields)
+		if err != nil {
+			return err
+		}
+		reqRoot.Request = &r
+		return nil
 	}
 
 	var r RequestCommon
