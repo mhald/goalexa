@@ -12,7 +12,9 @@ const RequestTypeAlexaSkillEventSkillAccountLinked = "AlexaSkillEvent.SkillAccou
 
 type RequestAlexaSkillEventSkillAccountLinked struct {
 	RequestCommon
-	AccessToken string `json:"accessToken"`
+	Body struct {
+		AccessToken string `json:"accessToken"`
+	} `json:"body"`
 }
 
 //
@@ -39,12 +41,14 @@ const RequestTypeAlexaSkillEventSkillPermissionAccepted = "AlexaSkillEvent.Skill
 
 type RequestAlexaSkillEventSkillPermissionAccepted struct {
 	RequestCommon
-	AcceptedPermissions []struct {
-		Scope string `json:"scope"`
-	} `json:"acceptedPermissions"`
-	AcceptedPersonPermissions []struct {
-		Scope string `json:"scope"`
-	} `json:"acceptedPersonPermissions"`
+	Body struct {
+		AcceptedPermissions []struct {
+			Scope string `json:"scope"`
+		} `json:"acceptedPermissions"`
+		AcceptedPersonPermissions []struct {
+			Scope string `json:"scope"`
+		} `json:"acceptedPersonPermissions"`
+	} `json:"body"`
 }
 
 //
@@ -55,10 +59,12 @@ const RequestTypeAlexaSkillEventSkillPermissionChanged = "AlexaSkillEvent.SkillP
 
 type RequestAlexaSkillEventSkillPermissionChanged struct {
 	RequestCommon
-	AcceptedPermissions []struct {
-		Scope string `json:"scope"`
-	} `json:"acceptedPermissions"`
-	AcceptedPersonPermissions []struct {
-		Scope string `json:"scope"`
-	} `json:"acceptedPersonPermissions"`
+	Body struct {
+		AcceptedPermissions []struct {
+			Scope string `json:"scope"`
+		} `json:"acceptedPermissions"`
+		AcceptedPersonPermissions []struct {
+			Scope string `json:"scope"`
+		} `json:"acceptedPersonPermissions"`
+	} `json:"body"`
 }

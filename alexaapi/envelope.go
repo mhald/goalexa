@@ -23,6 +23,9 @@ type Envelope struct {
 
 	// If a better type isn't found, map[string]any will be used
 	Payload any `json:"payload"`
+
+	// The original payload is stored here in case custom parsing is needed
+	PayloadJson []byte `json:"-"`
 }
 
 type PayloadName string
@@ -61,6 +64,8 @@ func SetEnvelopePayloadViaLookahead(ctx context.Context, envelope *Envelope, env
 	if err != nil {
 		return err
 	}
+
+	envelope.PayloadJson = payloadJson
 
 	return nil
 }

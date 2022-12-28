@@ -12,7 +12,7 @@ type Request interface {
 	GetRequestId() string
 	GetTimestamp() string
 	GetLocale() string
-	GetOtherFields() map[string]any
+	GetRequestJson() []byte
 }
 
 type RequestType string
@@ -36,8 +36,8 @@ type RequestCommon struct {
 	Timestamp string      `json:"timestamp"`
 	Locale    string      `json:"locale"`
 
-	// All fields other than those above
-	otherFields map[string]any
+	// Raw request JSON for custom parsing of unusual request types
+	requestJson []byte
 }
 
 func (rc *RequestCommon) GetType() RequestType {
@@ -56,159 +56,49 @@ func (rc *RequestCommon) GetLocale() string {
 	return rc.Locale
 }
 
-func (rc *RequestCommon) GetOtherFields() map[string]any {
-	return rc.otherFields
+func (rc *RequestCommon) GetRequestJson() []byte {
+	return rc.requestJson
 }
 
 // Attempts to set a strongly-typed value into the root.Request field
 // by "looking ahead" at the contents of the "type" field.
 //
-// If no match is found, a simple RequestCommon is used.
+// If no match is found, a simple RequestCommon is used, and the raw request
+// JSON is stored in the requestJson field for custom parsing.
 func SetRequestViaLookahead(ctx context.Context, reqRoot *RequestRoot, rootJson []byte) error {
 	reqJson := []byte(gjson.GetBytes(rootJson, "request").String())
-
-	unmarshalIntoOther := func(o *map[string]any) error {
-		err := json.Unmarshal([]byte(reqJson), o)
-		if err != nil {
-			return err
-		}
-		delete(*o, "type")
-		delete(*o, "requestId")
-		delete(*o, "timestamp")
-		delete(*o, "locale")
-		return nil
-	}
-
+	var r Request
+	rc := RequestCommon{requestJson: reqJson}
 	requestType := RequestType(gjson.GetBytes(reqJson, "type").String())
 	switch requestType {
 	case RequestTypeCanFulfillIntentRequest:
-		var r CanFulfillIntentRequest
-		err := json.Unmarshal(reqJson, &r)
-		if err != nil {
-			return err
-		}
-		err = unmarshalIntoOther(&r.otherFields)
-		if err != nil {
-			return err
-		}
-		reqRoot.Request = &r
-		return nil
-
+		r = &CanFulfillIntentRequest{RequestCommon: rc}
 	case RequestTypeIntentRequest:
-		var r RequestIntentRequest
-		err := json.Unmarshal(reqJson, &r)
-		if err != nil {
-			return err
-		}
-		err = unmarshalIntoOther(&r.otherFields)
-		if err != nil {
-			return err
-		}
-		reqRoot.Request = &r
-		return nil
-
+		r = &RequestIntentRequest{RequestCommon: rc}
 	case RequestTypeSessionEndedRequest:
-		var r RequestSessionEndedRequest
-		err := json.Unmarshal(reqJson, &r)
-		if err != nil {
-			return err
-		}
-		err = unmarshalIntoOther(&r.otherFields)
-		if err != nil {
-			return err
-		}
-		reqRoot.Request = &r
-		return nil
-
+		r = &RequestSessionEndedRequest{RequestCommon: rc}
 	case RequestTypeSessionResumedRequest:
-		var r RequestSessionResumedRequest
-		err := json.Unmarshal(reqJson, &r)
-		if err != nil {
-			return err
-		}
-		err = unmarshalIntoOther(&r.otherFields)
-		if err != nil {
-			return err
-		}
-		reqRoot.Request = &r
-		return nil
-
+		r = &RequestSessionResumedRequest{RequestCommon: rc}
 	case RequestTypeAplUserEvent:
-		var r RequestAplUserEvent
-		err := json.Unmarshal(reqJson, &r)
-		if err != nil {
-			return err
-		}
-		err = unmarshalIntoOther(&r.otherFields)
-		if err != nil {
-			return err
-		}
-		reqRoot.Request = &r
-		return nil
-
+		r = &RequestAplUserEvent{RequestCommon: rc}
 	case RequestTypeAlexaAuthorizationGrant:
-		var r RequestAlexaAuthorizationGrant
-		err := json.Unmarshal(reqJson, &r)
-		if err != nil {
-			return err
-		}
-		err = unmarshalIntoOther(&r.otherFields)
-		if err != nil {
-			return err
-		}
-		reqRoot.Request = &r
-		return nil
-
+		r = &RequestAlexaAuthorizationGrant{RequestCommon: rc}
 	case RequestTypeAlexaSkillEventSkillAccountLinked:
-		var r RequestAlexaSkillEventSkillAccountLinked
-		err := json.Unmarshal(reqJson, &r)
-		if err != nil {
-			return err
-		}
-		err = unmarshalIntoOther(&r.otherFields)
-		if err != nil {
-			return err
-		}
-		reqRoot.Request = &r
-		return nil
-
+		r = &RequestAlexaSkillEventSkillAccountLinked{RequestCommon: rc}
 	case RequestTypeAlexaSkillEventSkillPermissionAccepted:
-		var r RequestAlexaSkillEventSkillPermissionAccepted
-		err := json.Unmarshal(reqJson, &r)
-		if err != nil {
-			return err
-		}
-		err = unmarshalIntoOther(&r.otherFields)
-		if err != nil {
-			return err
-		}
-		reqRoot.Request = &r
-		return nil
-
+		r = &RequestAlexaSkillEventSkillPermissionAccepted{RequestCommon: rc}
 	case RequestTypeAlexaSkillEventSkillPermissionChanged:
-		var r RequestAlexaSkillEventSkillPermissionChanged
-		err := json.Unmarshal(reqJson, &r)
-		if err != nil {
-			return err
-		}
-		err = unmarshalIntoOther(&r.otherFields)
-		if err != nil {
-			return err
-		}
-		reqRoot.Request = &r
-		return nil
+		r = &RequestAlexaSkillEventSkillPermissionChanged{RequestCommon: rc}
+	default:
+		r = &rc
 	}
 
-	var r RequestCommon
-	err := json.Unmarshal(reqJson, &r)
+	err := json.Unmarshal(reqJson, r)
 	if err != nil {
 		return err
 	}
-	err = unmarshalIntoOther(&r.otherFields)
-	if err != nil {
-		return err
-	}
-	reqRoot.Request = &r
+
+	reqRoot.Request = r
 
 	return nil
 }
