@@ -85,12 +85,38 @@ func CreateDirectiveDialogConfirmIntent(updatedIntent *Intent) *DirectiveDialogC
 // Directive: Dialog.UpdateDynamicEntities
 
 type DirectiveDialogUpdateDynamicEntities struct {
-	Type DirectiveType `json:"type"`
-	// TODO
+	Type           DirectiveType                               `json:"type"`
+	UpdateBehavior UpdateDynamicEntitiesUpdateBehavior         `json:"updateBehavior,omitempty"`
+	Types          []*DirectiveDialogUpdateDynamicEntitiesType `json:"types,omitempty"`
 }
 
-func CreateDirectiveDialogUpdateDynamicEntities() *DirectiveDialogUpdateDynamicEntities {
+type DirectiveDialogUpdateDynamicEntitiesType struct {
+	Name   string                                           `json:"name"`
+	Values []*DirectiveDialogUpdateDynamicEntitiesTypeValue `json:"values"`
+}
+
+type DirectiveDialogUpdateDynamicEntitiesTypeValue struct {
+	Id   string                                            `json:"id"`
+	Name DirectiveDialogUpdateDynamicEntitiesTypeValueName `json:"name"`
+}
+
+type DirectiveDialogUpdateDynamicEntitiesTypeValueName struct {
+	Value    string   `json:"value"`
+	Synonyms []string `json:"synonyms"`
+}
+
+func CreateDirectiveDialogUpdateDynamicEntities(updateBehavior UpdateDynamicEntitiesUpdateBehavior, types []*DirectiveDialogUpdateDynamicEntitiesType) *DirectiveDialogUpdateDynamicEntities {
 	return &DirectiveDialogUpdateDynamicEntities{
-		Type: DirectiveTypeDialogUpdateDynamicEntities,
+		Type:           DirectiveTypeDialogUpdateDynamicEntities,
+		UpdateBehavior: updateBehavior,
+		Types:          types,
 	}
 }
+
+type UpdateDynamicEntitiesUpdateBehavior string
+
+const (
+	UpdateDynamicEntitiesUpdateBehaviorUnspecified UpdateDynamicEntitiesUpdateBehavior = ""
+	UpdateDynamicEntitiesUpdateBehaviorReplace     UpdateDynamicEntitiesUpdateBehavior = "REPLACE"
+	UpdateDynamicEntitiesUpdateBehaviorClear       UpdateDynamicEntitiesUpdateBehavior = "CLEAR"
+)
