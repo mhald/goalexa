@@ -7,11 +7,34 @@ import (
 	"github.com/tidwall/gjson"
 )
 
+// All possible locale codes as defined in
+// https://developer.amazon.com/en-US/docs/alexa/custom-skills/develop-skills-in-multiple-languages.html
+type RequestLocale string
+
+const (
+	RequestLocaleArSA RequestLocale = "ar-SA"
+	RequestLocaleDeDE RequestLocale = "de-DE"
+	RequestLocaleEnAU RequestLocale = "en-AU"
+	RequestLocaleEnCA RequestLocale = "en-CA"
+	RequestLocaleEnGB RequestLocale = "en-GB"
+	RequestLocaleEnIN RequestLocale = "en-IN"
+	RequestLocaleEnUS RequestLocale = "en-US"
+	RequestLocaleEsES RequestLocale = "es-ES"
+	RequestLocaleEsMX RequestLocale = "es-MX"
+	RequestLocaleEsUS RequestLocale = "es-US"
+	RequestLocaleFrCA RequestLocale = "fr-CA"
+	RequestLocaleFrFR RequestLocale = "fr-FR"
+	RequestLocaleHiIN RequestLocale = "hi-IN"
+	RequestLocaleItIT RequestLocale = "it-IT"
+	RequestLocaleJaJP RequestLocale = "ja-JP"
+	RequestLocalePtBR RequestLocale = "pt-BR"
+)
+
 type Request interface {
 	GetType() RequestType
 	GetRequestId() string
 	GetTimestamp() string
-	GetLocale() string
+	GetLocale() RequestLocale
 	GetRequestJson() []byte
 }
 
@@ -31,10 +54,10 @@ const (
 )
 
 type RequestCommon struct {
-	Type      RequestType `json:"type"`
-	RequestId string      `json:"requestId"`
-	Timestamp string      `json:"timestamp"`
-	Locale    string      `json:"locale"`
+	Type      RequestType   `json:"type"`
+	RequestId string        `json:"requestId"`
+	Timestamp string        `json:"timestamp"`
+	Locale    RequestLocale `json:"locale"`
 
 	// Raw request JSON for custom parsing of unusual request types
 	requestJson []byte
@@ -52,7 +75,7 @@ func (rc *RequestCommon) GetTimestamp() string {
 	return rc.Timestamp
 }
 
-func (rc *RequestCommon) GetLocale() string {
+func (rc *RequestCommon) GetLocale() RequestLocale {
 	return rc.Locale
 }
 
