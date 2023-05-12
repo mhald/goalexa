@@ -74,4 +74,5 @@ type Context struct {
 	Viewport    *Viewport           `json:"Viewport,omitempty"`
 	Viewports   []*Viewport         `json:"Viewports,omitempty"`
 	AudioPlayer *AudioPlayerContext `json:"AudioPlayer,omitempty"`
+	APLContext  *APLContext         `json:"Alexa.Presentation.APL,omitempty"`
 }

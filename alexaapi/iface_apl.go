@@ -93,3 +93,9 @@ type RequestAplUserEvent struct {
 	Source     map[string]any `json:"source,omitempty"`
 	Components map[string]any `json:"components,omitempty"`
 }
+
+type APLContext struct {
+	ComponentsVisibleOnScreen any    `json:"componentsVisibleOnScreen,omitempty"`
+	Token                     string `json:"token,omitempty"`
+	Version                   string `json:"version,omitempty"`
+}
