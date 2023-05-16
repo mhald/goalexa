@@ -13,7 +13,9 @@ const (
 )
 
 type AudioPlayerContext struct {
-	PlayerActivity AudioPlayerActivity `json:"playerActivity"`
+	PlayerActivity       AudioPlayerActivity `json:"playerActivity"`
+	OffsetInMilliseconds int64               `json:"offsetInMilliseconds,omitempty"`
+	Token                string              `json:"token,omitempty"`
 }
 
 type AudioPlayerActivity string

@@ -63,8 +63,23 @@ type SlotResolutions struct {
 	ResolutionsPerAuthority []SlotAuthority `json:"resolutionsPerAuthority,omitempty"`
 }
 
+type SlotAuthorityStatusCode string
+
+const (
+	SlotStatusUnspecified SlotAuthorityStatusCode = ""
+	SlotStatusNoMatch     SlotAuthorityStatusCode = "ER_SUCCESS_NO_MATCH"
+	SlotStatusMatch       SlotAuthorityStatusCode = "ER_SUCCESS_MATCH"
+	SlotStatusTimeout     SlotAuthorityStatusCode = "ER_ERROR_TIMEOUT"
+	SlotStatusException   SlotAuthorityStatusCode = "ER_ERROR_EXCEPTION"
+)
+
+type SlotAuthorityStatus struct {
+	Code SlotAuthorityStatusCode `json:"code"`
+}
+
 type SlotAuthority struct {
 	Authority string                         `json:"authority"`
+	Status    SlotAuthorityStatus            `json:"status,omitempty"`
 	Values    []SlotAuthorityValueCollection `json:"values,omitempty"`
 }
 
